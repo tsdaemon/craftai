@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from .. import styles
-from ..components.sidebar import sidebar
-from ..components.navbar import navbar
-from typing import Callable
+from collections.abc import Callable
 
 import reflex as rx
+
+from craftai import styles
+from craftai.components.navbar import navbar
+from craftai.components.sidebar import sidebar
 
 # Meta tags for the app.
 default_meta = [
@@ -18,7 +19,7 @@ default_meta = [
 ]
 
 
-def menu_item_link(text, href):
+def menu_item_link(text: str, href: str) -> rx.Component:
     return rx.menu.item(
         rx.link(
             text,
@@ -79,7 +80,7 @@ def template(
         # Get the meta tags for the page.
         all_meta = [*default_meta, *(meta or [])]
 
-        def templated_page():
+        def templated_page() -> rx.Component:
             return rx.flex(
                 navbar(),
                 sidebar(),
@@ -121,7 +122,7 @@ def template(
             script_tags=script_tags,
             on_load=on_load,
         )
-        def theme_wrap():
+        def theme_wrap() -> rx.Component:
             return rx.theme(
                 templated_page(),
                 has_background=True,

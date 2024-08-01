@@ -1,11 +1,12 @@
 """The settings page."""
 
-from ..templates import template
-
 import reflex as rx
-from ..views.color_picker import primary_color_picker, secondary_color_picker
-from ..views.radius_picker import radius_picker
-from ..views.scaling_picker import scaling_picker
+
+from craftai.templates.main import template
+
+from .color_picker import primary_color_picker, secondary_color_picker
+from .radius_picker import radius_picker
+from .scaling_picker import scaling_picker
 
 
 @template(route="/settings", title="Settings")
@@ -13,7 +14,6 @@ def settings() -> rx.Component:
     """The settings page.
 
     Returns:
-        The UI for the settings page.
     """
     return rx.vstack(
         rx.heading("Settings", size="5"),

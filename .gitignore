@@ -2,9 +2,9 @@
 *.db
 *.py[cod]
 .cursorignore
+.data/
 .venv/
 .web
 __pycache__/
 assets/external/
-data/
 venv/

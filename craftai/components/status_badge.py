@@ -1,6 +1,7 @@
 import reflex as rx
 
-def _badge(status: str):
+
+def _badge(status: str) -> rx.Component:
     badge_mapping = {
         "Completed": ("check", "Completed", "green"),
         "Pending": ("loader", "Pending", "yellow"),
@@ -16,7 +17,8 @@ def _badge(status: str):
         size="2",
     )
 
-def status_badge(status: str):
+
+def status_badge(status: str) -> rx.Component:
     return rx.match(
         status,
         ("Completed", _badge("Completed")),

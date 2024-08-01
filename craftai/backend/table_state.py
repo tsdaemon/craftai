@@ -1,6 +1,4 @@
 import reflex as rx
-from typing import Union, List
-import csv
 
 
 class Item(rx.Base):
@@ -16,7 +14,7 @@ class Item(rx.Base):
 class TableState(rx.State):
     """The state class."""
 
-    items: List[Item] = []
+    items: list[Item] = []
 
     search_value: str = ""
     sort_value: str = ""
@@ -27,7 +25,7 @@ class TableState(rx.State):
     limit: int = 12  # Number of rows per page
 
     @rx.var(cache=True)
-    def filtered_sorted_items(self) -> List[Item]:
+    def filtered_sorted_items(self) -> list[Item]:
         items = self.items
 
         # Filter items based on selected item
@@ -64,9 +62,7 @@ class TableState(rx.State):
 
     @rx.var(cache=True)
     def total_pages(self) -> int:
-        return (self.total_items // self.limit) + (
-            1 if self.total_items % self.limit else 0
-        )
+        return (self.total_items // self.limit) + (1 if self.total_items % self.limit else 0)
 
     @rx.var(cache=True, initial_value=[])
     def get_current_page(self) -> list[Item]:
@@ -74,23 +70,23 @@ class TableState(rx.State):
         end_index = start_index + self.limit
         return self.filtered_sorted_items[start_index:end_index]
 
-    def prev_page(self):
+    def prev_page(self) -> None:
         if self.page_number > 1:
             self.offset -= self.limit
 
-    def next_page(self):
+    def next_page(self) -> None:
         if self.page_number < self.total_pages:
             self.offset += self.limit
 
-    def first_page(self):
+    def first_page(self) -> None:
         self.offset = 0
 
-    def last_page(self):
+    def last_page(self) -> None:
         self.offset = (self.total_pages - 1) * self.limit
 
-    def load_entries(self):
+    def load_entries(self) -> None:
         pass
 
-    def toggle_sort(self):
+    def toggle_sort(self) -> None:
         self.sort_reverse = not self.sort_reverse
         self.load_entries()

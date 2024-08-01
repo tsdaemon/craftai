@@ -1,8 +1,8 @@
 """Sidebar component for the app."""
 
-from .. import styles
-
 import reflex as rx
+
+from .. import styles
 
 
 def sidebar_header() -> rx.Component:
@@ -22,6 +22,10 @@ def sidebar_header() -> rx.Component:
     )
 
 
+def sidebar_item_icon(icon: str) -> rx.Component:
+    return rx.icon(icon, size=18)
+
+
 def sidebar_footer() -> rx.Component:
     """Sidebar footer.
 
@@ -29,18 +33,7 @@ def sidebar_footer() -> rx.Component:
         The sidebar footer component.
     """
     return rx.hstack(
-        rx.link(
-            rx.text("Docs", size="3"),
-            href="https://reflex.dev/docs/getting-started/introduction/",
-            color_scheme="gray",
-            underline="none",
-        ),
-        rx.link(
-            rx.text("Blog", size="3"),
-            href="https://reflex.dev/blog/",
-            color_scheme="gray",
-            underline="none",
-        ),
+        rx.link(sidebar_item_icon("settings"), href="/settings"),
         rx.spacer(),
         rx.color_mode.button(style={"opacity": "0.8", "scale": "0.95"}),
         justify="start",
@@ -50,11 +43,7 @@ def sidebar_footer() -> rx.Component:
     )
 
 
-def sidebar_item_icon(icon: str) -> rx.Component:
-    return rx.icon(icon, size=18)
-
-
-def sidebar_item(text: str, url: str) -> rx.Component:
+def sidebar_item(text: str, url: str, icon: str = "layout-dashboard") -> rx.Component:
     """Sidebar item.
 
     Args:
@@ -65,19 +54,11 @@ def sidebar_item(text: str, url: str) -> rx.Component:
         rx.Component: The sidebar item component.
     """
     # Whether the item is active.
-    active = (rx.State.router.page.path == url.lower()) | (
-        (rx.State.router.page.path == "/") & text == "Overview"
-    )
+    active = (rx.State.router.page.path == url.lower()) | ((rx.State.router.page.path == "/") & text == "Overview")
 
     return rx.link(
         rx.hstack(
-            rx.match(
-                text,
-                ("Dashboard", sidebar_item_icon("layout-dashboard")),
-                ("About", sidebar_item_icon("book-open")),
-                ("Settings", sidebar_item_icon("settings")),
-                sidebar_item_icon("layout-dashboard"),
-            ),
+            sidebar_item_icon(icon),
             rx.text(text, size="3", weight="regular"),
             color=rx.cond(
                 active,
@@ -122,39 +103,22 @@ def sidebar() -> rx.Component:
     Returns:
         The sidebar component.
     """
-    # Get all the decorated pages and add them to the sidebar.
-    from reflex.page import get_decorated_pages
-
-    # The ordered page routes.
-    ordered_page_routes = [
-        "/",
-        "/about",
-        "/settings",
+    sidebar_nav = [
+        ("/", "Overview", "layout-dashboard"),
+        ("/chatbots", "Chat-bots", "bot-message-square"),
+        ("/agents", "Agents", "pocket-knife"),
+        ("/tasks", "Tasks", "briefcase-business"),
     ]
-    # Get the decorated pages.
-    pages = get_decorated_pages()
-
-    # Include all pages even if they are not in the ordered_page_routes.
-    ordered_pages = sorted(
-        pages,
-        key=lambda page: (
-            ordered_page_routes.index(page["route"])
-            if page["route"] in ordered_page_routes
-            else len(ordered_page_routes)
-        ),
-    )
-
+    sidebar_secondary_nav = [
+        ("/connectors", "Connectors", "cable"),
+    ]
     return rx.flex(
         rx.vstack(
             sidebar_header(),
             rx.vstack(
-                *[
-                    sidebar_item(
-                        text=page.get("title", page["route"].strip("/").capitalize()),
-                        url=page["route"],
-                    )
-                    for page in ordered_pages
-                ],
+                *[sidebar_item(text=title, url=url, icon=icon) for url, title, icon in sidebar_nav]
+                + [rx.separator()]
+                + [sidebar_item(text=title, url=url, icon=icon) for url, title, icon in sidebar_secondary_nav],
                 spacing="1",
                 width="100%",
             ),

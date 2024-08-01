@@ -1,8 +1,8 @@
 """Navbar component for the app."""
 
-from .. import styles
-
 import reflex as rx
+
+from .. import styles
 
 
 def menu_item_icon(icon: str) -> rx.Component:
@@ -20,9 +20,7 @@ def menu_item(text: str, url: str) -> rx.Component:
         rx.Component: The menu item component.
     """
     # Whether the item is active.
-    active = (rx.State.router.page.path == url.lower()) | (
-        (rx.State.router.page.path == "/") & text == "Overview"
-    )
+    active = (rx.State.router.page.path == url.lower()) | ((rx.State.router.page.path == "/") & text == "Overview")
 
     return rx.link(
         rx.hstack(
@@ -140,9 +138,7 @@ def menu_button() -> rx.Component:
                     rx.divider(),
                     *[
                         menu_item(
-                            text=page.get(
-                                "title", page["route"].strip("/").capitalize()
-                            ),
+                            text=page.get("title", page["route"].strip("/").capitalize()),
                             url=page["route"],
                         )
                         for page in ordered_pages

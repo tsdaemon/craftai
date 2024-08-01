@@ -1,3 +1,4 @@
-from .dashboard import dashboard
-from .about import about
+from .overview import dashboard
 from .settings import settings
+
+__all__ = ["dashboard", "settings"]
