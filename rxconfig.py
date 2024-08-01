@@ -1,5 +1,5 @@
 import reflex as rx
 
 config = rx.Config(
-    app_name="orchestrator",
+    app_name="craftai",
 )

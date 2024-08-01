@@ -89,10 +89,7 @@ class TableState(rx.State):
         self.offset = (self.total_pages - 1) * self.limit
 
     def load_entries(self):
-        with open("data.csv", mode="r", encoding="utf-8") as file:
-            reader = csv.DictReader(file)
-            self.items = [Item(**row) for row in reader]
-            self.total_items = len(self.items)
+        pass
 
     def toggle_sort(self):
         self.sort_reverse = not self.sort_reverse
