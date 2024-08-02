@@ -2,16 +2,12 @@
 
 import reflex as rx
 
-from craftai.templates.main import template
+from craftai.frontend.templates.main import template
 
 
 @template(route="/", title="Overview")
-def dashboard() -> rx.Component:
-    """The dashboard page.
-
-    Returns:
-        The UI for the dashboard page.
-    """
+def index() -> rx.Component:
+    """The overview page."""
     return rx.vstack(
         rx.heading("Overview", size="5"),
         spacing="8",

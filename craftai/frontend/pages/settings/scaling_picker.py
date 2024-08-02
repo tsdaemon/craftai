@@ -1,6 +1,6 @@
 import reflex as rx
 
-from craftai.templates.main import ThemeState
+from craftai.frontend.templates.main import ThemeState
 
 
 def scaling_picker() -> rx.Component:

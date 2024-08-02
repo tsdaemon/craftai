@@ -2,7 +2,7 @@
 
 import reflex as rx
 
-from craftai.templates.main import template
+from craftai.frontend.templates.main import template
 
 from .color_picker import primary_color_picker, secondary_color_picker
 from .radius_picker import radius_picker

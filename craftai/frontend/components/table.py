@@ -1,7 +1,93 @@
+import abc
+
 import reflex as rx
 
-from ..backend.table_state import Item, TableState
-from ..components.status_badge import status_badge
+from .status_badge import status_badge
+
+
+class Item(rx.Base):
+    """The item class."""
+
+
+class TableState(rx.State, abc.ABC):
+    """The state class."""
+
+    items: list[Item] = []
+
+    search_value: str = ""
+    sort_value: str = ""
+    sort_reverse: bool = False
+
+    total_items: int = 0
+    offset: int = 0
+    limit: int = 12  # Number of rows per page
+
+    @rx.var(cache=True)
+    def filtered_sorted_items(self) -> list[Item]:
+        items = self.items
+
+        # Filter items based on selected item
+        if self.sort_value:
+            items = sorted(
+                items,
+                key=lambda item: str(getattr(item, self.sort_value)).lower(),
+                reverse=self.sort_reverse,
+            )
+
+        # Filter items based on search value
+        if self.search_value:
+            search_value = self.search_value.lower()
+            items = [
+                item
+                for item in items
+                if any(
+                    search_value in str(getattr(item, attr)).lower()
+                    for attr in [
+                        "pipeline",
+                        "status",
+                        "workflow",
+                        "timestamp",
+                        "duration",
+                    ]
+                )
+            ]
+
+        return items
+
+    @rx.var(cache=True)
+    def page_number(self) -> int:
+        return (self.offset // self.limit) + 1
+
+    @rx.var(cache=True)
+    def total_pages(self) -> int:
+        return (self.total_items // self.limit) + (1 if self.total_items % self.limit else 0)
+
+    @rx.var(cache=True, initial_value=[])
+    def get_current_page(self) -> list[Item]:
+        start_index = self.offset
+        end_index = start_index + self.limit
+        return self.filtered_sorted_items[start_index:end_index]
+
+    def prev_page(self) -> None:
+        if self.page_number > 1:
+            self.offset -= self.limit
+
+    def next_page(self) -> None:
+        if self.page_number < self.total_pages:
+            self.offset += self.limit
+
+    def first_page(self) -> None:
+        self.offset = 0
+
+    def last_page(self) -> None:
+        self.offset = (self.total_pages - 1) * self.limit
+
+    def load_items(self, items: list[Item]) -> None:
+        self.items = items
+
+    def toggle_sort(self) -> None:
+        self.sort_reverse = not self.sort_reverse
+        self.load_entries()
 
 
 def _create_dialog(item: Item, icon_name: str, color_scheme: str, dialog_title: str) -> rx.Component:
@@ -143,7 +229,7 @@ def _pagination_view() -> rx.Component:
     )
 
 
-def main_table() -> rx.Component:
+def table() -> rx.Component:
     return rx.box(
         rx.flex(
             rx.flex(
@@ -199,14 +285,6 @@ def main_table() -> rx.Component:
                 align="center",
                 justify="end",
                 spacing="3",
-            ),
-            rx.button(
-                rx.icon("arrow-down-to-line", size=20),
-                "Export",
-                size="3",
-                variant="surface",
-                display=["none", "none", "none", "flex"],
-                on_click=rx.download(url="/data.csv"),
             ),
             spacing="3",
             justify="between",

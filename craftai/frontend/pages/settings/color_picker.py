@@ -1,8 +1,8 @@
 import reflex as rx
 from reflex.components.radix.themes.base import LiteralAccentColor, LiteralGrayColor
 
-from craftai import styles
-from craftai.templates.main import ThemeState
+from craftai.frontend import styles
+from craftai.frontend.templates.main import ThemeState
 
 primary_color_dict: dict[str, str] = {
     color.capitalize(): f"linear-gradient(45deg, {rx.color(color, 10)}, {rx.color(color, 8)})"

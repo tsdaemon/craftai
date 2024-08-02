@@ -1,14 +1,12 @@
 """Common templates used between pages in the app."""
 
-from __future__ import annotations
-
 from collections.abc import Callable
 
 import reflex as rx
 
-from craftai import styles
-from craftai.components.navbar import navbar
-from craftai.components.sidebar import sidebar
+from craftai.frontend import styles
+from craftai.frontend.components.navbar import navbar
+from craftai.frontend.components.sidebar import sidebar
 
 # Meta tags for the app.
 default_meta = [
